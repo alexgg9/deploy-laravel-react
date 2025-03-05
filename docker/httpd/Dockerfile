@@ -30,7 +30,7 @@ RUN cp $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/conf.d/php.ini
 
 RUN sed -i 's/;extension=zip/extension=zip/g' $PHP_INI_DIR/conf.d/php.ini
 RUN sed -i 's/;extension=pdo_mysql/extension=pdo_mysql/g' $PHP_INI_DIR/conf.d/php.ini
-RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/gestion-solicitudes/public#g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/gestion-solicitudes-fpdual/public#g' /etc/apache2/sites-available/000-default.conf
 
 
 RUN a2enmod rewrite
@@ -39,11 +39,12 @@ RUN a2enmod rewrite
 
 USER www-data
 RUN git clone https://github.com/alexgg9/gestion-solicitudes-fpdual.git
-WORKDIR /var/www/html/gestion-solicitudes
+WORKDIR /var/www/html/gestion-solicitudes-fpdual
 
 #El ficchero .env debería copiarse desde fuera del contenedor
 RUN cp .env.example .env
 RUN composer install
+RUN php artisan key:generate
 RUN touch database/database.sqlite
 RUN php artisan migrate
 
